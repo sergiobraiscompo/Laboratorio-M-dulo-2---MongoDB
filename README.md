@@ -18,7 +18,7 @@ Lista los 10 primeros:
 Ordenados por precio de forma ascendente.
 Sólo muestra: nombre, precio, camas y la localidad (address.market).
 ```
-
+    
 ```
 
 
@@ -69,12 +69,23 @@ Nombre.
 Localidad (no queremos mostrar un objeto, sólo el string con la localidad).
 Precio
 ```
-
+    db.listingsAndReviews.aggregate([
+        { $match: { "address.country": "Spain" }},
+        { $project: { _id:0, name:1, location:"$address.market", price: 1 } }
+    ])
 ```
 
 Queremos saber cuantos alojamientos hay disponibles por pais.
 ```
-
+    db.listingsAndReviews.aggregate(
+        {
+            $group: 
+            {  
+                _id: "$address.country",
+                totalAccomodations: {$sum: 1}
+            }
+        }
+    )
 ```
 
 
