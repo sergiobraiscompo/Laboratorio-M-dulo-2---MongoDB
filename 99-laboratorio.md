@@ -30,9 +30,9 @@ Esta es la parte mínima que tendrás que entregar para superar este laboratorio
 - Saca en una consulta cuantos alojamientos hay en España.
 
 ```js
-  use('airbnb')
+use('airbnb')
 
-  db.listingsAndReviews.find({"address.country": "Spain"}, {name: 1, "address.country": 1});
+db.listingsAndReviews.find({ "address.country": "Spain" }, { name: 1, "address.country": 1 });
 ```
 
 - Lista los 10 primeros:
@@ -40,7 +40,12 @@ Esta es la parte mínima que tendrás que entregar para superar este laboratorio
   - Sólo muestra: nombre, precio, camas y la localidad (`address.market`).
 
 ```js
-// Pega aquí tu consulta
+use('airbnb')
+
+db.listingsAndReviews.find(
+    { "address.country": "Spain" },
+    { name: 1, price: 1, beds: 1, location: "$address.market" }
+).limit(10).sort({ price: 1 })
 ```
 
 ### Filtrando
@@ -54,8 +59,8 @@ Esta es la parte mínima que tendrás que entregar para superar este laboratorio
 use('airbnb')
 
 db.listingsAndReviews.find(
-    { $and: [{beds: 4}, {bathrooms: {$gte: 2}}]},
-    {_id: 0, name: 1, price: 1, beds: 1, bathrooms: 1},
+    { $and: [{ beds: 4 }, { bathrooms: { $gte: 2 } }] },
+    { _id: 0, name: 1, price: 1, beds: 1, bathrooms: 1 },
 )
 ```
 
@@ -66,10 +71,22 @@ db.listingsAndReviews.find(
 use('airbnb')
 
 db.listingsAndReviews.find(
-    { $and: [{beds: 4}, {bathrooms: {$gte: 2}}, {amenities: /Wifi/}] },
-    { _id: 0, name: 1, price: 1, beds: 1, bathrooms: 1, amenities: 1 },
+    {
+        $and: [
+            { beds: 4 },
+            { bathrooms: { $gte: 2 } },
+            { amenities: /Wifi/ }
+        ]
+    },
+    {
+        _id: 0,
+        name: 1,
+        price: 1,
+        beds: 1,
+        bathrooms: 1,
+        amenities: 1
+    },
 )
-
 ```
 
 - Y bueno, un amigo trae a su perro, así que tenemos que buscar alojamientos que permitan mascota (_Pets allowed_).
@@ -79,8 +96,21 @@ db.listingsAndReviews.find(
 use('airbnb')
 
 db.listingsAndReviews.find(
-  { $and: [{beds: 4}, {bathrooms: {$gte: 2}}, {amenities: /Wifi/ && /Pets allowed/}] },
-  { _id: 0, name: 1, price: 1, beds: 1, bathrooms: 1, amenities: 1 },
+    {
+        $and: [
+            { beds: 4 },
+            { bathrooms: { $gte: 2 } },
+            { amenities: /Wifi/ && /Pets allowed/ }
+        ]
+    },
+    {
+        _id: 0,
+        name: 1,
+        price: 1,
+        beds: 1,
+        bathrooms: 1,
+        amenities: 1
+    },
 )
 
 ```
@@ -91,14 +121,65 @@ db.listingsAndReviews.find(
 ```js
 use('airbnb')
 
-
+db.listingsAndReviews.find(
+    {
+        $and: [
+            { price: { $lte: 50 } },
+            { $or: [{ "address.market": "Barcelona" }, { "address.country": "Portugal" }] },
+            { "review_scores.review_scores_rating": { $gte: 88 } },
+            { amenities: /Wifi/ && /Pets allowed/ },
+            { beds: { $gte: 4 } },
+            { bathrooms: { $gte: 2 } },
+        ]
+    },
+    {
+        _id: 0,
+        name: 1,
+        price: 1,
+        beds: 1,
+        bathrooms: 1,
+        rating: "$review_scores.review_scores_rating",
+        location: "$address.market"
+    },
+)
 ```
+
 
 - También queremos que el huésped sea un superhost (`host.host_is_superhost`) y que no tengamos que pagar depósito de seguridad (`security_deposit`).
   - Sólo muestra: nombre, precio, camas, baños, rating, si el huésped es superhost, depósito de seguridad y localidad.
 
 ```js
 use('airbnb')
+
+db.listingsAndReviews.find(
+    {
+        $and: [
+            { price: { $lte: 50 } },
+            { $or: [{ "address.market": "Barcelona" }, { "address.country": "Portugal" }] },
+            { "review_scores.review_scores_rating": { $gte: 88 } },
+            { amenities: /Wifi/ && /Pets allowed/ },
+            { beds: { $gte: 4 } },
+            { bathrooms: { $gte: 2 } },
+            {
+                $and: [
+                    { "host.host_is_superhost": true },
+                    { security_deposit: 0 }
+                ]
+            }
+        ]
+    },
+    {
+        _id: 0,
+        name: 1,
+        price: 1,
+        beds: 1,
+        bathrooms: 1,
+        rating: "$review_scores.review_scores_rating",
+        isSuperhost: "$host.host_is_superhost",
+        security_deposit: 1,
+        location: "$address.market",
+    },
+)
 ```
 
 ### Agregaciones
@@ -112,8 +193,8 @@ use('airbnb')
 use('airbnb')
 
 db.listingsAndReviews.aggregate([
-    { $match: { "address.country": "Spain" }},
-    { $project: { _id:0, name:1, location:"$address.market", price: 1 } }
+    { $match: { "address.country": "Spain" } },
+    { $project: { _id: 0, name: 1, location: "$address.market", price: 1 } }
 ])
 ```
 
@@ -124,10 +205,10 @@ use('airbnb')
 
 db.listingsAndReviews.aggregate(
     {
-        $group: 
-        {  
+        $group:
+        {
             _id: "$address.country",
-            totalAccomodations: {$sum: 1}
+            totalAccomodations: { $sum: 1 }
         }
     }
 )
@@ -140,12 +221,32 @@ db.listingsAndReviews.aggregate(
 ```js
 use('airbnb')
 
+db.listingsAndReviews.aggregate([
+    { $match: { "address.country": "Spain"}},
+    { 
+        $group: {
+            _id: null,
+            averageAccomodationPrice: { $avg: "$price"}
+        }
+    },
+])
 ```
 
 - ¿Y si quisieramos hacer como el anterior, pero sacarlo por paises?
 
 ```js
 use('airbnb')
+// Indice temporal creado para una consulta más rápida
+db.listingsAndReviews.createIndex({country: 1}, {expireAfterSeconds: 10})
+
+db.listingsAndReviews.aggregate([
+    {
+        $group: {
+            _id: "$address.country",
+            averageAccomodationPrice: { $avg: "$price" }
+        }
+    },
+])
 
 ```
 
@@ -154,7 +255,27 @@ use('airbnb')
 ```js
 use('airbnb')
 
+use('aribnb')
 
+db.listingsAndReviews.aggregate([
+    {
+        $group: {
+            _id: {
+                country: "$address.country",
+                bedroomsNumber: "$bedrooms"
+            },
+            averageAccomodationPrice: { $avg: "$price" },
+        }
+    },
+    {
+        $project: {
+            _id: 0,
+            country: "$_id.country",
+            bedrooms: "$_id.bedroomsNumber",
+            averageAccomodationPrice: 1
+        }
+    }
+])
 ```
 
 ## Desafio
@@ -172,4 +293,21 @@ Queremos mostrar el top 5 de alojamientos más caros en España, con los siguent
 ```js
 use('airbnb')
 
+db.listingsAndReviews.aggregate([
+    { $match: {"address.country": "Spain"} },
+    { $sort: {price: -1}},
+    { $limit: 5 },
+    {
+        $project: {
+            _id: 0,
+            name: 1,
+            price: 1,
+            bedroomNumber: "$bedrooms",
+            bedNumber: "$beds",
+            bathroomNumber: "$bathrooms",
+            city: "$address.market",
+            amenities: toString("$amenities"),
+        }
+    }
+])
 ```
