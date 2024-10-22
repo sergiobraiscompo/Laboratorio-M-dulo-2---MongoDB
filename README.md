@@ -2,7 +2,7 @@
 ¿Si montaras un sitio real, ¿Qué posibles problemas pontenciales les ves a como está almacenada la información?
 Indica aquí que problemas ves:
 ```
-    - Hay campos que estarían mejor englobados en diferentes documentos ya que no todos los datos se muestran a la vez ni son consultados tan a menudo (datos del alojamiento, políticas de privacidad, imágenes, ...)
+    - Los ID de los documentos están guardados como strings en lugar de objectid, el motor de mongo por defecto indexa las búsquedas con los ids, por lo tanto se pierde performance en las búsquedas 
 ```
 
 
