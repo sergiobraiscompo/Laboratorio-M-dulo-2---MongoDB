@@ -2,7 +2,7 @@
 ¿Si montaras un sitio real, ¿Qué posibles problemas pontenciales les ves a como está almacenada la información?
 Indica aquí que problemas ves:
 ```
-    - Los ID de los documentos están guardados como strings en lugar de objectid, el motor de mongo por defecto indexa las búsquedas con los ids, por lo tanto se pierde performance en las búsquedas 
+    - Los ID de los documentos están guardados como strings en lugar de objectid, los IDs en string hexadecimal pesan 24bytes, a diferencia de los 12 que pesa el object id.
 ```
 
 
