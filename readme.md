@@ -16,7 +16,9 @@ En este base de datos puedes encontrar un montón de alojamientos y sus reviews,
 **Pregunta**. Si montaras un sitio real, ¿Qué posibles problemas pontenciales les ves a como está almacenada la información?
 
 ```md
-- Hay campos que estarían mejor englobados en diferentes documentos ya que no todos los datos se muestran a la vez ni son consultados tan a menudo (datos del alojamiento, políticas de privacidad, imágenes, ...)
+- Los object id de los alojamientos deberían estar en el formato objectID. Esto es debido a que pesa solo 12 bytes, además que almacena incluso la fecha de creación del objeto.
+
+
 ```
 
 ## Obligatorio
