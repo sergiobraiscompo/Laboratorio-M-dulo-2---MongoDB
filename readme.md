@@ -17,8 +17,6 @@ En este base de datos puedes encontrar un montón de alojamientos y sus reviews,
 
 ```md
 - Hay campos que estarían mejor englobados en diferentes documentos ya que no todos los datos se muestran a la vez ni son consultados tan a menudo (datos del alojamiento, políticas de privacidad, imágenes, ...)
-
-- La dirección podría tener campos separados para poder hacer mejores búsquedas por ciudad o calle y no necesitar el campo  market.
 ```
 
 ## Obligatorio
