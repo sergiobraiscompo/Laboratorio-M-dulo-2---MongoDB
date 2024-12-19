@@ -17,8 +17,6 @@ En este base de datos puedes encontrar un montón de alojamientos y sus reviews,
 
 ```md
 - Los object id de los alojamientos deberían estar en el formato objectID. Esto es debido a que pesa solo 12 bytes, además que almacena incluso la fecha de creación del objeto.
-
-
 ```
 
 ## Obligatorio
@@ -30,9 +28,7 @@ Esta es la parte mínima que tendrás que entregar para superar este laboratorio
 - Saca en una consulta cuantos alojamientos hay en España.
 
 ```js
-use('airbnb')
-
-db.listingsAndReviews.find({ "address.country": "Spain" }, { name: 1, "address.country": 1 });
+db.listingsAndReviews.count({ "address.country": "Spain" });
 ```
 
 - Lista los 10 primeros:
@@ -255,8 +251,6 @@ db.listingsAndReviews.aggregate([
 ```js
 use('airbnb')
 
-use('aribnb')
-
 db.listingsAndReviews.aggregate([
     {
         $group: {
@@ -306,7 +300,7 @@ db.listingsAndReviews.aggregate([
             bedNumber: "$beds",
             bathroomNumber: "$bathrooms",
             city: "$address.market",
-            amenities: toString("$amenities"),
+            amenities: "$amenities".toString(),
         }
     }
 ])
