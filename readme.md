@@ -285,23 +285,5 @@ Queremos mostrar el top 5 de alojamientos más caros en España, con los siguent
 - Servicios, pero en vez de un array, un string con todos los servicios incluidos.
 
 ```js
-use('airbnb')
 
-db.listingsAndReviews.aggregate([
-    { $match: {"address.country": "Spain"} },
-    { $sort: {price: -1}},
-    { $limit: 5 },
-    {
-        $project: {
-            _id: 0,
-            name: 1,
-            price: 1,
-            bedroomNumber: "$bedrooms",
-            bedNumber: "$beds",
-            bathroomNumber: "$bathrooms",
-            city: "$address.market",
-            amenities: "$amenities".toString(),
-        }
-    }
-])
 ```
